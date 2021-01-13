@@ -439,7 +439,7 @@ async function outputResults() {
     const allUpdatedPackageJsonPath = filterPackageJson(Array.from(FILES.values()));
     let updatedPackages = [];
     allUpdatedPackageJsonPath.map(packageJsonPath => {
-        const packageJson = fs.readFileSync(`./${packageJsonPath}`);
+        const packageJson = JSON.parse(fs.readFileSync(`./${packageJsonPath}`, 'utf-8'));
         updatedPackages.push({
             name: packageJson.name,
             version: packageJson.version
