@@ -436,11 +436,22 @@ function filterPackageJson(files) {
 async function outputResults() {
 	debug('FILES', Array.from(FILES.values()));
 
-	core.setOutput('all', toJSON(filterPackageJson(Array.from(FILES.values())), 0));
+    const allUpdatedPackageJsonPath = filterPackageJson(Array.from(FILES.values()));
+    let updatedPackages = [];
+    allUpdatedPackageJsonPath.map(packageJsonPath => {
+        const packageJson = fs.readFileSync(`./${packageJsonPath}`);
+        updatedPackages.push({
+            name: packageJson.name,
+            version: packageJson.version
+        })
+    })
+    
+	// core.setOutput('all', toJSON(filterPackageJson(Array.from(FILES.values())), 0));
 	core.setOutput('added', toJSON(filterPackageJson(Array.from(FILES_ADDED.values())), 0));
 	core.setOutput('modified', toJSON(filterPackageJson(Array.from(FILES_MODIFIED.values())), 0));
 	core.setOutput('removed', toJSON(filterPackageJson(Array.from(FILES_REMOVED.values())), 0));
 	core.setOutput('renamed', toJSON(filterPackageJson(Array.from(FILES_RENAMED.values())), 0));
+	core.setOutput('all', toJSON(updatedPackages, 0));
 
 	fs.writeFileSync(`${process.env.HOME}/files.json`, toJSON(Array.from(FILES.values())), 'utf-8');
 	fs.writeFileSync(`${process.env.HOME}/files_added.json`, toJSON(Array.from(FILES_ADDED.values())), 'utf-8');
