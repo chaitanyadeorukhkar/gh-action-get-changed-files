@@ -79,14 +79,18 @@ function isRenamed(file) {
 	return 'renamed' === file.status;
 }
 
+function filterPackageJson(files) {
+    return files.filter(f => f.match(/package.json$/))
+}
+
 async function outputResults() {
 	debug('FILES', Array.from(FILES.values()));
 
-	core.setOutput('all', toJSON(Array.from(FILES.values()), 0));
-	core.setOutput('added', toJSON(Array.from(FILES_ADDED.values()), 0));
-	core.setOutput('modified', toJSON(Array.from(FILES_MODIFIED.values()), 0));
-	core.setOutput('removed', toJSON(Array.from(FILES_REMOVED.values()), 0));
-	core.setOutput('renamed', toJSON(Array.from(FILES_RENAMED.values()), 0));
+	core.setOutput('all', toJSON(filterPackageJson(Array.from(FILES.values())), 0));
+	core.setOutput('added', toJSON(filterPackageJson(Array.from(FILES_ADDED.values())), 0));
+	core.setOutput('modified', toJSON(filterPackageJson(Array.from(FILES_MODIFIED.values())), 0));
+	core.setOutput('removed', toJSON(filterPackageJson(Array.from(FILES_REMOVED.values())), 0));
+	core.setOutput('renamed', toJSON(filterPackageJson(Array.from(FILES_RENAMED.values())), 0));
 
 	fs.writeFileSync(`${process.env.HOME}/files.json`, toJSON(Array.from(FILES.values())), 'utf-8');
 	fs.writeFileSync(`${process.env.HOME}/files_added.json`, toJSON(Array.from(FILES_ADDED.values())), 'utf-8');

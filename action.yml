@@ -1,5 +1,5 @@
-name:        'Get Changed Files'
-description: 'Saves lists of changed files as JSON for use by other actions.'
+name:        'Get Changed package.json files'
+description: 'Saves lists of changed package.json files for use by other actions.'
 author:      'Dustin Falgout <dustin@falgout.us>'
 runs:
   using: 'node12'
@@ -10,15 +10,15 @@ inputs:
     required:    true
 outputs:
   all:
-    description: JSON array of all changed files that weren't removed
+    description: JSON array of all changed package.json that weren't removed
   added:
-    description: JSON array of added files
+    description: JSON array of added package.json
   modified:
-    description: JSON array of modified files
+    description: JSON array of modified package.json
   renamed:
-    description: JSON array of renamed files
+    description: JSON array of renamed package.json
   removed:
-    description: JSON array of removed files
+    description: JSON array of removed package.json
 branding:
   icon:  'search'
   color: 'gray-dark'
