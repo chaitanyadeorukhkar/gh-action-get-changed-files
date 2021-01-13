@@ -96,12 +96,12 @@ async function outputResults() {
         })
     })
     
-	core.setOutput('all', toJSON(filterPackageJson(Array.from(FILES.values())), 0));
+	// core.setOutput('all', toJSON(filterPackageJson(Array.from(FILES.values())), 0));
 	core.setOutput('added', toJSON(filterPackageJson(Array.from(FILES_ADDED.values())), 0));
 	core.setOutput('modified', toJSON(filterPackageJson(Array.from(FILES_MODIFIED.values())), 0));
 	core.setOutput('removed', toJSON(filterPackageJson(Array.from(FILES_REMOVED.values())), 0));
 	core.setOutput('renamed', toJSON(filterPackageJson(Array.from(FILES_RENAMED.values())), 0));
-	core.setOutput('updatedPackages', toJSON(updatedPackages, 0));
+	core.setOutput('all', toJSON(updatedPackages, 0));
 
 	fs.writeFileSync(`${process.env.HOME}/files.json`, toJSON(Array.from(FILES.values())), 'utf-8');
 	fs.writeFileSync(`${process.env.HOME}/files_added.json`, toJSON(Array.from(FILES_ADDED.values())), 'utf-8');
