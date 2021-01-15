@@ -2,15 +2,9 @@
   "name": "gh-action-get-changed-files",
   "version": "2.1.4",
   "private": true,
-  "main": "dist/index.js",
-  "scripts":{
-    "build": "ncc build index.js -o dist"
-  },
+  "main": "index.js",
   "dependencies": {
     "@actions/core": "1.2.6",
     "@actions/github": "3.0.0"
-  },
-  "devDependencies": {
-    "@zeit/ncc": "0.22.3"
   }
 }
