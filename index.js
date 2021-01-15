@@ -1,5 +1,6 @@
 // External Dependencies
 const fs     = require('fs');
+const path     = require('path');
 const github = require('@actions/github');
 const core   = require('@actions/core');
 
@@ -89,10 +90,14 @@ async function outputResults() {
     const allUpdatedPackageJsonPath = filterPackageJson(Array.from(FILES.values()));
     let updatedPackages = [];
     allUpdatedPackageJsonPath.map(packageJsonPath => {
-        const packageJson = JSON.parse(fs.readFileSync(`./${packageJsonPath}`, 'utf-8'));
+        const packageDirectory = path.dirname(`./${packageJsonPath}`)
+        const packageJson = JSON.parse(fs.readFileSync(`${packageDirectory}/package.json`, 'utf-8'));
+        const changelogContent = fs.readFileSync(`${packageDirectory}/CHANGELOG.md`, 'utf-8');
+        const changes = changelogContent.split(/\s##\s/).filter(f => f.match(new RegExp('^' + version)))[0].split(new RegExp('^' + version))[1]
         updatedPackages.push({
             name: packageJson.name,
-            version: packageJson.version
+            version: packageJson.version,
+            changes: changes
         })
     })
 

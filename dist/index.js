@@ -7,6 +7,7 @@ module.exports =
 
 // External Dependencies
 const fs     = __nccwpck_require__(5747);
+const path     = __nccwpck_require__(5622);
 const github = __nccwpck_require__(5438);
 const core   = __nccwpck_require__(2186);
 
@@ -96,10 +97,14 @@ async function outputResults() {
     const allUpdatedPackageJsonPath = filterPackageJson(Array.from(FILES.values()));
     let updatedPackages = [];
     allUpdatedPackageJsonPath.map(packageJsonPath => {
-        const packageJson = JSON.parse(fs.readFileSync(`./${packageJsonPath}`, 'utf-8'));
+        const packageDirectory = path.dirname(`./${packageJsonPath}`)
+        const packageJson = JSON.parse(fs.readFileSync(`${packageDirectory}/package.json`, 'utf-8'));
+        const changelogContent = fs.readFileSync(`${packageDirectory}/CHANGELOG.md`, 'utf-8');
+        const changes = changelogContent.split(/\s##\s/).filter(f => f.match(new RegExp('^' + version)))[0].split(new RegExp('^' + version))[1]
         updatedPackages.push({
             name: packageJson.name,
-            version: packageJson.version
+            version: packageJson.version,
+            changes: changes
         })
     })
 
