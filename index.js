@@ -3,6 +3,10 @@ const fs     = require('fs');
 const path     = require('path');
 const github = require('@actions/github');
 const core   = require('@actions/core');
+const unified = require("unified");
+const remarkParse = require("remark-parse");
+const remarkStringify = require("remark-stringify");
+const mdastToString = require("mdast-util-to-string");
 
 const context = github.context;
 const repo    = context.payload.repository;
@@ -61,6 +65,58 @@ function filterPackageJson(files) {
     return files.filter(f => f.match(/package.json$/))
 }
 
+function getChangelogEntry(changelog, version) {
+    let ast = unified().use(remarkParse).parse(changelog);
+    const BumpLevels = {
+        dep: 0,
+        patch: 1,
+        minor: 2,
+        major: 3,
+    } 
+    let highestLevel = BumpLevels.dep;
+  
+    let nodes = ast.children;
+    let headingStartInfo;
+    let endIndex;
+  
+    for (let i = 0; i < nodes.length; i++) {
+      let node = nodes[i];
+      if (node.type === "heading") {
+        let stringified = mdastToString(node);
+        let match = stringified.toLowerCase().match(/(major|minor|patch)/);
+        if (match !== null) {
+          let level = BumpLevels[match[0]];
+          highestLevel = Math.max(level, highestLevel);
+        }
+        if (headingStartInfo === undefined && stringified === version) {
+          headingStartInfo = {
+            index: i,
+            depth: node.depth,
+          };
+          continue;
+        }
+        if (
+          endIndex === undefined &&
+          headingStartInfo !== undefined &&
+          headingStartInfo.depth === node.depth
+        ) {
+          endIndex = i;
+          break;
+        }
+      }
+    }
+    if (headingStartInfo) {
+      ast.children = (ast.children).slice(
+        headingStartInfo.index + 1,
+        endIndex
+      );
+    }
+    return {
+      content: unified().use(remarkStringify).stringify(ast),
+      highestLevel: highestLevel,
+    };
+}
+
 async function outputResults() {
 	debug('FILES', Array.from(FILES.values()));
     const allUpdatedPackageJsonPath = filterPackageJson(Array.from(FILES.values()));
@@ -68,12 +124,12 @@ async function outputResults() {
     allUpdatedPackageJsonPath.map(packageJsonPath => {
         const packageDirectory = path.dirname(`./${packageJsonPath}`)
         const packageJson = JSON.parse(fs.readFileSync(`${packageDirectory}/package.json`, 'utf-8'));
-        const changelogContent = fs.readFileSync(`${packageDirectory}/CHANGELOG.md`, 'utf-8');
-        const changes = changelogContent.split(/\s##\s/).filter(f => f.match(new RegExp('^' + packageJson.version)))[0].split(new RegExp('^' + packageJson.version))[1]
+        const changelog = fs.readFileSync(`${packageDirectory}/CHANGELOG.md`, 'utf-8');
+        const changelogEntry = getChangelogEntry(changelog, packageJson.version)
         updatedPackages.push({
             name: packageJson.name,
             version: packageJson.version,
-            changes: changes
+            changes: changelogEntry.content
         })
     })
 

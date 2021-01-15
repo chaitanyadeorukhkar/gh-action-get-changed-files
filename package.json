@@ -8,7 +8,11 @@
   },
   "dependencies": {
     "@actions/core": "1.2.6",
-    "@actions/github": "3.0.0"
+    "@actions/github": "3.0.0",
+    "unified":"9.2.0",
+    "remark-parse":"9.0.0",
+    "remark-stringify":"9.0.1",
+    "mdast-util-to-string":"2.0.0"
   },
   "devDependencies": {
     "@vercel/ncc": "0.27.0"
