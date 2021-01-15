@@ -95,8 +95,8 @@ async function outputResults() {
             version: packageJson.version
         })
     })
-    
-    updatedPackages.map({name, version} => {
+
+    updatedPackages.map(({name, version}) => {
         gh.repos.createRelease({
             tag_name: `${name}@${version}`,
             ...gh.context.repo

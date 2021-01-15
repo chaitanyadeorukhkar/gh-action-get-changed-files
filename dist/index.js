@@ -445,7 +445,13 @@ async function outputResults() {
             version: packageJson.version
         })
     })
-    
+
+    updatedPackages.map(({name, version}) => {
+        gh.repos.createRelease({
+            tag_name: `${name}@${version}`,
+            ...gh.context.repo
+        })
+    })
 	// core.setOutput('all', toJSON(filterPackageJson(Array.from(FILES.values())), 0));
 	core.setOutput('added', toJSON(filterPackageJson(Array.from(FILES_ADDED.values())), 0));
 	core.setOutput('modified', toJSON(filterPackageJson(Array.from(FILES_MODIFIED.values())), 0));
