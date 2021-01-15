@@ -9,16 +9,8 @@ inputs:
     description: GitHub Personal Access Token
     required:    true
 outputs:
-  all:
-    description: JSON array of all changed package.json that weren't removed
-  added:
-    description: JSON array of added package.json
-  modified:
-    description: JSON array of modified package.json
-  renamed:
-    description: JSON array of renamed package.json
-  removed:
-    description: JSON array of removed package.json
+  updated:
+    description: JSON array of all updated packages with their name, version and changes
 branding:
   icon:  'search'
   color: 'gray-dark'
