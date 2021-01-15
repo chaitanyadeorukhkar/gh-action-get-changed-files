@@ -93,7 +93,7 @@ async function outputResults() {
         const packageDirectory = path.dirname(`./${packageJsonPath}`)
         const packageJson = JSON.parse(fs.readFileSync(`${packageDirectory}/package.json`, 'utf-8'));
         const changelogContent = fs.readFileSync(`${packageDirectory}/CHANGELOG.md`, 'utf-8');
-        const changes = changelogContent.split(/\s##\s/).filter(f => f.match(new RegExp('^' + version)))[0].split(new RegExp('^' + version))[1]
+        const changes = changelogContent.split(/\s##\s/).filter(f => f.match(new RegExp('^' + packageJson.version)))[0].split(new RegExp('^' + packageJson.version))[1]
         updatedPackages.push({
             name: packageJson.name,
             version: packageJson.version,
