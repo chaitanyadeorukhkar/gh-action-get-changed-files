@@ -1,16 +1,16 @@
-name:        'Get Changed package.json files'
+name: 'Get Changed package.json files'
 description: 'Saves lists of changed package.json files for use by other actions.'
-author:      'Dustin Falgout <dustin@falgout.us>'
+author: 'Dustin Falgout <dustin@falgout.us>'
 runs:
   using: 'node12'
-  main:  'dist/index.js'
+  main: 'dist/index.js'
 inputs:
   token:
     description: GitHub Personal Access Token
-    required:    true
+    required: true
 outputs:
   updated:
     description: JSON array of all updated packages with their name, version and changes
 branding:
-  icon:  'search'
+  icon: 'search'
   color: 'gray-dark'
