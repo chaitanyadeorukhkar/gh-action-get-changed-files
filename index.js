@@ -99,7 +99,7 @@ async function outputResults() {
     updatedPackages.map(({name, version}) => {
         gh.repos.createRelease({
             tag_name: `${name}@${version}`,
-            body:"",
+            body:"Some changes were made in this version",
             ...context.repo
         })
     })
