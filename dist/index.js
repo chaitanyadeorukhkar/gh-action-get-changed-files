@@ -137,14 +137,15 @@ async function outputResults() {
     });
   });
 
-  updatedPackages.map(({ name, version, changes }) => {
-    gh.repos.createRelease({
-      tag_name: `${name}@${version}`,
-      name: `${name}@${version}`,
-      body: changes,
-      ...context.repo,
-    });
-  });
+  //   updatedPackages.map(({ name, version, changes }) => {
+  //     gh.repos.createRelease({
+  //       tag_name: `${name}@${version}`,
+  //       name: `${name}@${version}`,
+  //       body: changes,
+  //       ...context.repo,
+  //     });
+  //   });
+
   core.setOutput('updated', toJSON(updatedPackages, 0));
 }
 
