@@ -15,6 +15,7 @@ const owner = repo.owner;
 const FILES = new Set();
 
 const gh = github.getOctokit(core.getInput('token'));
+const packageNameInput = github.getOctokit(core.getInput('package_name'));
 const args = { owner: owner.name || owner.login, repo: repo.name };
 
 function formatLogMessage(msg, obj = null) {
@@ -114,7 +115,7 @@ function getChangelogEntry(changelog, version) {
   };
 }
 
-async function outputResults() {
+async function processOutputs() {
   debug('FILES', Array.from(FILES.values()));
   const allUpdatedPackageJsonPath = filterPackageJson(Array.from(FILES.values()));
   let updatedPackages = [];
@@ -130,6 +131,14 @@ async function outputResults() {
     });
   });
 
+  let updatedVersion = null;
+  let updatedChangelogEntry = null;
+  if (packageNameInput) {
+    const updatedPackage = updatedPackages.find((package) => package.name == packageNameInput);
+    updatedVersion = updatedPackage.version;
+    updatedChangelogEntry = updatedPackage.changes;
+  }
+
   //   updatedPackages.map(({ name, version, changes }) => {
   //     gh.repos.createRelease({
   //       tag_name: `${name}@${version}`,
@@ -140,6 +149,8 @@ async function outputResults() {
   //   });
 
   core.setOutput('updated', toJSON(updatedPackages, 0));
+  core.setOutput('updatedVersion', updatedVersion);
+  core.setOutput('updatedChangelogEntry', updatedChangelogEntry);
 }
 
 async function processCommitData(result) {
@@ -166,7 +177,7 @@ getCommits().then((commits) => {
 
   Promise.all(commits.map(fetchCommitData))
     .then((data) => Promise.all(data.map(processCommitData)))
-    .then(outputResults)
+    .then(processOutputs)
     .then(() => (process.exitCode = 0))
     .catch((err) => core.error(err) && (process.exitCode = 1));
 });

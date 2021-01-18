@@ -8,9 +8,16 @@ inputs:
   token:
     description: GitHub Personal Access Token
     required: true
+  package_name:
+    description: Name of the package who's updatedVersion & updatedChangelogEntry will be stored in the output
+    required: false
 outputs:
   updated:
     description: JSON array of all updated packages with their name, version and changes
+  updatedVersion:
+    description: Updated version number of the package_name passed to the action. Null if there was no update.
+  updatedChangelogEntry:
+    description: Latest changelog entry of the package_name passed to the action. Null if there was no update.
 branding:
   icon: 'search'
   color: 'gray-dark'
