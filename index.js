@@ -15,7 +15,7 @@ const owner = repo.owner;
 const FILES = new Set();
 
 const gh = github.getOctokit(core.getInput('token'));
-const packageNameInput = github.getOctokit(core.getInput('package_name'));
+const packageNameInput = core.getInput('package_name');
 const args = { owner: owner.name || owner.login, repo: repo.name };
 
 function formatLogMessage(msg, obj = null) {
